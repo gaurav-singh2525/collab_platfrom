@@ -3,9 +3,9 @@ package routes
 import (
 	"collab-code-platform/configs"
 	"collab-code-platform/internal/handlers"
+	"collab-code-platform/internal/middleware"
 	"collab-code-platform/internal/repositories"
 	"collab-code-platform/internal/services"
-	"collab-code-platform/internal/middleware"
 	"database/sql"
 
 	"github.com/gin-gonic/gin"
@@ -29,6 +29,14 @@ func SetupRoutes(
 		userService,
 	)
 
+	executionService :=
+		services.NewExecutionService()
+
+	executionHandler :=
+		handlers.NewExecutionHandler(
+			executionService,
+		)
+
 	r.POST(
 		"/signup",
 		authHandler.Signup,
@@ -43,9 +51,13 @@ func SetupRoutes(
 		middleware.AuthMiddleware(cfg.JWTSecret),
 	)
 	{
-	protected.GET(
-	"/me",
-	authHandler.Me,
-	)
+		protected.GET(
+			"/me",
+			authHandler.Me,
+		)
+		protected.POST(
+			"/execute",
+			executionHandler.Execute,
+		)
 	}
 }
