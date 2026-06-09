@@ -3,9 +3,9 @@ package websocket
 import (
 	"net/http"
 
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"fmt"
 )
 
 type Handler struct {
@@ -58,13 +58,21 @@ func (h *Handler) Connect(
 		client,
 	)
 
+	h.hub.BroadcastPresence(
+		roomID,
+	)
 	defer func() {
 
 		h.hub.RemoveClient(
 			client,
 		)
 
+		h.hub.BroadcastPresence(
+			roomID,
+		)
+
 		conn.Close()
+
 	}()
 	for {
 

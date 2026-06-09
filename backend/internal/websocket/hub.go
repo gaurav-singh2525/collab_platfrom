@@ -1,7 +1,9 @@
 package websocket
 
 import (
+	"collab-code-platform/internal/models"
 	"github.com/gorilla/websocket"
+	"encoding/json"
 )
 
 type Hub struct {
@@ -73,4 +75,22 @@ func (h *Hub) RemoveClient(
 			roomID,
 		)
 	}
+}
+
+func (h *Hub) BroadcastPresence(
+	roomID string,
+) {
+	count := len(
+		h.Rooms[roomID],
+	)
+	msg := models.WSMessage{
+		Type:  "presence",
+		Count: count,
+	}
+	data, _ :=
+		json.Marshal(msg)
+	h.BroadcastToRoom(
+		roomID,
+		data,
+	)
 }

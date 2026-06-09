@@ -25,6 +25,8 @@ function Dashboard() {
 
   const [output, setOutput] = useState("");
 
+  const [userCount, setUserCount] = useState(0);
+
   const fetchUser = async () => {
     try {
       const data = await getCurrentUser();
@@ -67,6 +69,9 @@ function Dashboard() {
       if (message.type === "code_change") {
         setCode(message.code);
       }
+      if (message.type === "presence") {
+        setUserCount(message.count);
+      }
     };
 
     return () => {
@@ -85,7 +90,11 @@ function Dashboard() {
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>Welcome: {user?.Email}</p>
+      <p>Welcome: {user?.email}</p>
+      <p>
+        Connected Users:
+        {userCount}
+      </p>
       <div>
         <h3>Room ID:</h3>
 
