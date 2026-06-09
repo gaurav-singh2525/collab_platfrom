@@ -6,6 +6,7 @@ import (
 	"collab-code-platform/internal/middleware"
 	"collab-code-platform/internal/repositories"
 	"collab-code-platform/internal/services"
+	"collab-code-platform/internal/websocket"
 	"database/sql"
 
 	"github.com/gin-gonic/gin"
@@ -37,6 +38,14 @@ func SetupRoutes(
 			executionService,
 		)
 
+	hub :=
+		websocket.NewHub()
+
+	wsHandler :=
+		websocket.NewHandler(
+			hub,
+		)
+
 	r.POST(
 		"/signup",
 		authHandler.Signup,
@@ -45,7 +54,10 @@ func SetupRoutes(
 		"/login",
 		authHandler.Login,
 	)
-
+	r.GET(
+		"/ws/:roomId",
+		wsHandler.Connect,
+	)
 	protected := r.Group("/")
 	protected.Use(
 		middleware.AuthMiddleware(cfg.JWTSecret),

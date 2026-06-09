@@ -4,6 +4,8 @@ go 1.26.3
 
 require github.com/gin-gonic/gin v1.12.0
 
+require github.com/gorilla/websocket v1.5.3 //direct
+
 require github.com/golang-jwt/jwt/v5 v5.3.1 //direct
 
 require (

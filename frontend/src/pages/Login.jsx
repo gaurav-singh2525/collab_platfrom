@@ -25,7 +25,7 @@ function Login() {
 
       auth.login(data.token);
 
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       console.error(err);
     } finally {
