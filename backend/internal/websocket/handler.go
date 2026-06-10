@@ -3,7 +3,8 @@ package websocket
 import (
 	"net/http"
 
-	"fmt"
+	"collab-code-platform/internal/models"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
@@ -58,6 +59,36 @@ func (h *Handler) Connect(
 		client,
 	)
 
+	room := h.hub.Rooms[roomID]
+
+	codeMsg := models.WSMessage{
+		Type: "code_change",
+		Code: room.Code,
+	}
+
+	data, err := json.Marshal(codeMsg)
+
+	if err == nil {
+		conn.WriteMessage(
+			websocket.TextMessage,
+			data,
+		)
+	}
+
+	langMsg := models.WSMessage{
+		Type:     "language_change",
+		Language: room.Language,
+	}
+
+	data, err = json.Marshal(langMsg)
+
+	if err == nil {
+		conn.WriteMessage(
+			websocket.TextMessage,
+			data,
+		)
+	}
+
 	h.hub.BroadcastPresence(
 		roomID,
 	)
@@ -83,10 +114,27 @@ func (h *Handler) Connect(
 			break
 		}
 
-		fmt.Println(
-			"Received:",
-			string(message),
+		var msg models.WSMessage
+
+		err = json.Unmarshal(
+			message,
+			&msg,
 		)
+
+		if err != nil {
+			continue
+		}
+
+		room := h.hub.Rooms[roomID]
+
+		if msg.Type == "code_change" {
+			room.Code = msg.Code
+		}
+
+		if msg.Type == "language_change" {
+			room.Language = msg.Language
+		}
+
 		h.hub.BroadcastToRoom(
 			roomID,
 			message,

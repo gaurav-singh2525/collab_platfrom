@@ -2,19 +2,19 @@ package websocket
 
 import (
 	"collab-code-platform/internal/models"
-	"github.com/gorilla/websocket"
 	"encoding/json"
+	"github.com/gorilla/websocket"
 )
 
 type Hub struct {
-	Rooms map[string]map[*Client]bool
+	Rooms map[string]*Room
 }
 
 func NewHub() *Hub {
 
 	return &Hub{
 		Rooms: make(
-			map[string]map[*Client]bool,
+			map[string]*Room,
 		),
 	}
 }
@@ -25,7 +25,7 @@ func (h *Hub) BroadcastToRoom(
 ) {
 
 	clients :=
-		h.Rooms[roomID]
+		h.Rooms[roomID].Clients
 
 	for client := range clients {
 
@@ -42,17 +42,15 @@ func (h *Hub) AddClient(
 
 	roomID := client.RoomID
 
-	if _, exists :=
-		h.Rooms[roomID]; !exists {
-
-		h.Rooms[roomID] =
-			make(
-				map[*Client]bool,
-			)
+	if _, exists := h.Rooms[roomID]; !exists {
+		h.Rooms[roomID] = &Room{
+			Clients:  make(map[*Client]bool),
+			Code:     "",
+			Language: "python",
+		}
 	}
 
-	h.Rooms[roomID][client] =
-		true
+	h.Rooms[roomID].Clients[client] = true
 }
 
 func (h *Hub) RemoveClient(
@@ -62,13 +60,11 @@ func (h *Hub) RemoveClient(
 	roomID := client.RoomID
 
 	delete(
-		h.Rooms[roomID],
-		client,
-	)
+		h.Rooms[roomID].Clients,
+		client)
 
 	if len(
-		h.Rooms[roomID],
-	) == 0 {
+		h.Rooms[roomID].Clients) == 0 {
 
 		delete(
 			h.Rooms,
@@ -81,7 +77,7 @@ func (h *Hub) BroadcastPresence(
 	roomID string,
 ) {
 	count := len(
-		h.Rooms[roomID],
+		h.Rooms[roomID].Clients,
 	)
 	msg := models.WSMessage{
 		Type:  "presence",

@@ -19,7 +19,7 @@ function Dashboard() {
 
   const [loading, setLoading] = useState(true);
 
-  const [code, setCode] = useState(`print("HelloWolrd")`);
+  const [code, setCode] = useState(``);
 
   const [language, setLanguage] = useState("python");
 
@@ -49,14 +49,14 @@ function Dashboard() {
     }
   };
 
-  // const handleCodeChange = (newCode) => {
-  //   setCode(newCode);
+  const handleLanguageChange = (newLanguage) => {
+    setLanguage(newLanguage);
 
-  //   socketService.send({
-  //     type: "code_change",
-  //     code: newCode,
-  //   });
-  // };
+    socketService.send({
+      type: "language_change",
+      language: newLanguage,
+    });
+  };
 
   const { roomId } = useParams();
 
@@ -71,6 +71,9 @@ function Dashboard() {
       }
       if (message.type === "presence") {
         setUserCount(message.count);
+      }
+      if (message.type === "language_change") {
+        setLanguage(message.language);
       }
     };
 
@@ -100,7 +103,10 @@ function Dashboard() {
 
         <code>{roomId}</code>
       </div>
-      <LanguageSelector language={language} setLanguage={setLanguage} />
+      <LanguageSelector
+        language={language}
+        onLanguageChange={handleLanguageChange}
+      />
 
       <CodeEditor code={code} setCode={setCode} language={language} />
 
