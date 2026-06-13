@@ -79,9 +79,20 @@ func (h *Hub) BroadcastPresence(
 	count := len(
 		h.Rooms[roomID].Clients,
 	)
+	users := []string{}
+	for client := range h.Rooms[roomID].Clients {
+
+		users = append(
+			users,
+			client.Username,
+		)
+	}
 	msg := models.WSMessage{
-		Type:  "presence",
+		Type: "presence",
+
 		Count: count,
+
+		Users: users,
 	}
 	data, _ :=
 		json.Marshal(msg)

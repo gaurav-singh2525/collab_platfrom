@@ -24,6 +24,12 @@ func (s *ExecutionService) Execute(
 	case "python":
 		return execution.ExecutePython(code)
 
+	case "javascript":
+		return execution.ExecuteJavaScript(code)
+
+	case "cpp":
+		return execution.ExecuteCpp(code)
+
 	default:
 		return nil,
 			fmt.Errorf(

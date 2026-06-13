@@ -50,9 +50,14 @@ func (h *Handler) Connect(
 			"roomId",
 		)
 
+	username :=
+		c.Query(
+			"username",
+		)
 	client := &Client{
-		Conn:   conn,
-		RoomID: roomID,
+		Conn:     conn,
+		RoomID:   roomID,
+		Username: username,
 	}
 
 	h.hub.AddClient(
@@ -60,6 +65,20 @@ func (h *Handler) Connect(
 	)
 
 	room := h.hub.Rooms[roomID]
+
+	joinMsg := models.WSMessage{
+		Type: "user_joined",
+
+		Username: client.Username,
+	}
+	data1, _ :=
+		json.Marshal(
+			joinMsg,
+		)
+	h.hub.BroadcastToRoom(
+		roomID,
+		data1,
+	)
 
 	codeMsg := models.WSMessage{
 		Type: "code_change",
@@ -93,6 +112,21 @@ func (h *Handler) Connect(
 		roomID,
 	)
 	defer func() {
+
+		leaveMsg := models.WSMessage{
+			Type: "user_left",
+
+			Username: client.Username,
+		}
+		data, _ :=
+			json.Marshal(
+				leaveMsg,
+			)
+
+		h.hub.BroadcastToRoom(
+			roomID,
+			data,
+		)
 
 		h.hub.RemoveClient(
 			client,

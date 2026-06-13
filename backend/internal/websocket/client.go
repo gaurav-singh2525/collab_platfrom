@@ -5,6 +5,7 @@ import (
 )
 
 type Client struct {
-	Conn   *websocket.Conn
-	RoomID string
+	Conn     *websocket.Conn
+	RoomID   string
+	Username string
 }

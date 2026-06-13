@@ -3,11 +3,15 @@ class SocketService {
         this.socket = null;
     }
 
-    connect(roomId) {
-        this.socket = new WebSocket(
-            `ws://localhost:8080/ws/${roomId}`
-        );
-
+    connect(
+        roomId,
+        username,
+    ) {
+        this.socket =
+            new WebSocket(
+                `ws://localhost:8080/ws/${roomId}?username=${encodeURIComponent(username)}`
+            );
+            
         this.socket.onopen = () => {
             console.log("Connected");
         };

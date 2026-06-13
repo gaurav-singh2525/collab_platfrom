@@ -30,19 +30,20 @@ func SetupRoutes(
 		userService,
 	)
 
+	hub :=
+		websocket.NewHub()
+
+	wsHandler :=
+		websocket.NewHandler(
+			hub,
+		)
+
 	executionService :=
 		services.NewExecutionService()
 
 	executionHandler :=
 		handlers.NewExecutionHandler(
 			executionService,
-		)
-
-	hub :=
-		websocket.NewHub()
-
-	wsHandler :=
-		websocket.NewHandler(
 			hub,
 		)
 

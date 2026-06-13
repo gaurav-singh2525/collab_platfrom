@@ -5,7 +5,7 @@ import (
 
 	"collab-code-platform/internal/dto"
 	"collab-code-platform/internal/services"
-	
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -103,6 +103,7 @@ func (h *AuthHandler) Login(
 		http.StatusOK,
 		gin.H{
 			"token": token,
+			"email": req.Email,
 		},
 	)
 }
