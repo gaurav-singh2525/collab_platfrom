@@ -33,9 +33,15 @@ func SetupRoutes(
 	hub :=
 		websocket.NewHub()
 
+	roomRepo :=
+		repositories.NewRoomRepository(
+			db,
+		)
+
 	wsHandler :=
 		websocket.NewHandler(
 			hub,
+			roomRepo,
 		)
 
 	executionService :=

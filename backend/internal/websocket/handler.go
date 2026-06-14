@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"collab-code-platform/internal/models"
+	"collab-code-platform/internal/repositories"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -11,14 +12,18 @@ import (
 
 type Handler struct {
 	hub *Hub
+
+	roomRepo *repositories.RoomRepository
 }
 
 func NewHandler(
 	hub *Hub,
+	roomRepo *repositories.RoomRepository,
 ) *Handler {
 
 	return &Handler{
-		hub: hub,
+		hub:      hub,
+		roomRepo: roomRepo,
 	}
 }
 
@@ -63,6 +68,24 @@ func (h *Handler) Connect(
 	h.hub.AddClient(
 		client,
 	)
+
+	savedRoom, err :=
+		h.roomRepo.GetRoom(
+			roomID,
+		)
+
+	if err == nil {
+
+		if room,
+			ok := h.hub.Rooms[roomID]; ok {
+
+			room.Code =
+				savedRoom.Code
+
+			room.Language =
+				savedRoom.Language
+		}
+	}
 
 	room := h.hub.Rooms[roomID]
 
@@ -163,10 +186,24 @@ func (h *Handler) Connect(
 
 		if msg.Type == "code_change" {
 			room.Code = msg.Code
+			h.roomRepo.SaveRoom(
+				roomID,
+				room.Code,
+				room.Language,
+			)
 		}
 
-		if msg.Type == "language_change" {
-			room.Language = msg.Language
+		if msg.Type ==
+			"language_change" {
+
+			room.Language =
+				msg.Language
+
+			h.roomRepo.SaveRoom(
+				roomID,
+				room.Code,
+				room.Language,
+			)
 		}
 
 		h.hub.BroadcastToRoom(

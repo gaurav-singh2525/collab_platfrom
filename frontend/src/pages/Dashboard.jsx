@@ -49,7 +49,7 @@ function Dashboard() {
 
       setOutput(result.stdout || result.stderr);
     } catch (err) {
-      setOutput("Execution Failed");
+      setOutput(err.response?.data?.error || "Execution Failed");
     }
   };
 
