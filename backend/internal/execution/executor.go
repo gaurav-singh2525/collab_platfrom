@@ -54,7 +54,6 @@ func ExecutePython(
 		"-i",
 		"--rm",
 		"--network", "none",
-		"--read-only",
 		"--tmpfs", "/tmp",
 		"--cpus", "1",
 		"--memory", "128m",
@@ -134,7 +133,6 @@ func ExecuteJavaScript(
 		"-i",
 		"--rm",
 		"--network", "none",
-		"--read-only",
 		"--tmpfs", "/tmp",
 		"--cpus", "1",
 		"--memory", "128m",
@@ -214,7 +212,6 @@ func ExecuteCpp(
 		"-i",
 		"--rm",
 		"--network", "none",
-		"--read-only",
 		"--tmpfs", "/tmp",
 		"--cpus", "1",
 		"--memory", "256m",
@@ -223,7 +220,7 @@ func ExecuteCpp(
 		"gcc:15-bookworm",
 		"sh",
 		"-c",
-		"g++ /code/main.cpp -o /tmp/main && /tmp/main",
+		"g++ /code/main.cpp -o /code/main && /code/main",
 	)
 
 	cmd.Stdin =
