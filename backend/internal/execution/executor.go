@@ -6,11 +6,14 @@ import (
 
 	"collab-code-platform/internal/models"
 	"context"
+	"strings"
 	"time"
 )
 
+
+
 func ExecutePython(
-	code string,
+	code string, input string,
 ) (*models.ExecutionResult, error) {
 
 	file, err := os.CreateTemp(
@@ -34,6 +37,10 @@ func ExecutePython(
 		return nil, err
 	}
 
+	if err := file.Close(); err != nil {
+		return nil, err
+	}
+
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
 		5*time.Second,
@@ -44,15 +51,21 @@ func ExecutePython(
 		ctx,
 		"docker",
 		"run",
+		"-i",
 		"--rm",
 		"--network", "none",
+		"--read-only",
+		"--tmpfs", "/tmp",
 		"--cpus", "1",
 		"--memory", "128m",
+		"--pids-limit", "32",
 		"-v", file.Name()+":/code/main.py:ro",
 		"python:3.11",
 		"python",
 		"/code/main.py",
 	)
+	cmd.Stdin =
+		strings.NewReader(input)
 
 	output, err := cmd.CombinedOutput()
 
@@ -78,7 +91,7 @@ func ExecutePython(
 }
 
 func ExecuteJavaScript(
-	code string,
+	code string, input string,
 ) (
 	*models.ExecutionResult,
 	error,
@@ -104,6 +117,10 @@ func ExecuteJavaScript(
 		return nil, err
 	}
 
+	if err := file.Close(); err != nil {
+		return nil, err
+	}
+
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
 		5*time.Second,
@@ -114,15 +131,22 @@ func ExecuteJavaScript(
 		ctx,
 		"docker",
 		"run",
+		"-i",
 		"--rm",
 		"--network", "none",
+		"--read-only",
+		"--tmpfs", "/tmp",
 		"--cpus", "1",
 		"--memory", "128m",
+		"--pids-limit", "32",
 		"-v", file.Name()+":/code/main.js:ro",
 		"node:22-alpine",
 		"node",
 		"/code/main.js",
 	)
+
+	cmd.Stdin =
+		strings.NewReader(input)
 
 	output, err := cmd.CombinedOutput()
 
@@ -147,7 +171,7 @@ func ExecuteJavaScript(
 }
 
 func ExecuteCpp(
-	code string,
+	code string, input string,
 ) (
 	*models.ExecutionResult,
 	error,
@@ -173,6 +197,10 @@ func ExecuteCpp(
 		return nil, err
 	}
 
+	if err := file.Close(); err != nil {
+		return nil, err
+	}
+
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
 		5*time.Second,
@@ -183,16 +211,23 @@ func ExecuteCpp(
 		ctx,
 		"docker",
 		"run",
+		"-i",
 		"--rm",
 		"--network", "none",
+		"--read-only",
+		"--tmpfs", "/tmp",
 		"--cpus", "1",
 		"--memory", "256m",
+		"--pids-limit", "32",
 		"-v", file.Name()+":/code/main.cpp:ro",
 		"gcc:15-bookworm",
 		"sh",
 		"-c",
 		"g++ /code/main.cpp -o /tmp/main && /tmp/main",
 	)
+
+	cmd.Stdin =
+		strings.NewReader(input)
 
 	output, err := cmd.CombinedOutput()
 

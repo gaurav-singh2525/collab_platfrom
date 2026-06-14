@@ -33,7 +33,7 @@ function CodeEditor({ code, setCode, language }) {
 
         wordWrap: "on",
 
-        automaticLayout: true,
+        automaticLayout:true,
 
         tabSize: 2,
 

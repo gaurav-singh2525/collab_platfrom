@@ -4,4 +4,5 @@ type ExecuteRequest struct {
 	RoomID   string `json:"roomId"`
 	Language string `json:"language"`
 	Code     string `json:"code"`
+	Input    string `json:"input"`
 }

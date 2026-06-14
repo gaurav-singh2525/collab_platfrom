@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"fmt"
 )
 
 type ExecutionHandler struct {
@@ -46,10 +47,13 @@ func (h *ExecutionHandler) Execute(
 		return
 	}
 
+	fmt.Println("INPUT:", req.Input)
+
 	result, err :=
 		h.service.Execute(
 			req.Language,
 			req.Code,
+			req.Input,
 		)
 
 	output := result.Stdout

@@ -17,18 +17,19 @@ func NewExecutionService() *ExecutionService {
 func (s *ExecutionService) Execute(
 	language string,
 	code string,
+	input string,
 ) (*models.ExecutionResult, error) {
 
 	switch language {
 
 	case "python":
-		return execution.ExecutePython(code)
+		return execution.ExecutePython(code, input)
 
 	case "javascript":
-		return execution.ExecuteJavaScript(code)
+		return execution.ExecuteJavaScript(code, input)
 
 	case "cpp":
-		return execution.ExecuteCpp(code)
+		return execution.ExecuteCpp(code, input)
 
 	default:
 		return nil,

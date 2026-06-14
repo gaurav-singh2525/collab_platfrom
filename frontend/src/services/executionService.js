@@ -4,7 +4,8 @@ export const executeCode =
 	async (
 		roomID,
 		language,
-		code
+		code,
+		input
 	) => {
 
 		const response =
@@ -14,6 +15,7 @@ export const executeCode =
 					roomID,
 					language,
 					code,
+					input,
 				}
 			);
 

@@ -37,6 +37,8 @@ function Dashboard() {
 
   const [copied, setCopied] = useState(false);
 
+  const [input, setInput] = useState("");
+
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -54,7 +56,7 @@ function Dashboard() {
 
   const handleRun = async () => {
     try {
-      const result = await executeCode(roomId, language, code);
+      const result = await executeCode(roomId, language, code, input);
 
       setOutput(result.stdout || result.stderr);
     } catch (err) {
@@ -296,6 +298,30 @@ function Dashboard() {
           "
           >
             <CodeEditor code={code} setCode={setCode} language={language} />
+          </div>
+
+          {/* input */}
+          
+          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+            <h3 className="mb-3 text-lg font-semibold">Input</h3>
+
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Enter program input here..."
+              className="
+      w-full
+      h-32
+      resize-none
+      rounded-lg
+      bg-slate-950
+      p-3
+      text-white
+      border
+      border-slate-700
+      outline-none
+    "
+            />
           </div>
 
           {/* Output */}
