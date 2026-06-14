@@ -125,7 +125,6 @@ Side-by-side view showing code syncing across two browser tabs or users.
 Each run happens inside a hardened Docker container with:
 
 - No network access (`--network none`)
-- Read-only filesystem
 - CPU, memory, and PID limits
 - 5-second execution timeout
 
