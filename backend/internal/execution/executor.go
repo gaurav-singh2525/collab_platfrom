@@ -45,8 +45,10 @@ func ExecutePython(
 		"docker",
 		"run",
 		"--rm",
-		"-v",
-		file.Name()+":/code/main.py",
+		"--network", "none",
+		"--cpus", "1",
+		"--memory", "128m",
+		"-v", file.Name()+":/code/main.py:ro",
 		"python:3.11",
 		"python",
 		"/code/main.py",
@@ -113,8 +115,10 @@ func ExecuteJavaScript(
 		"docker",
 		"run",
 		"--rm",
-		"-v",
-		file.Name()+":/code/main.js",
+		"--network", "none",
+		"--cpus", "1",
+		"--memory", "128m",
+		"-v", file.Name()+":/code/main.js:ro",
 		"node:22-alpine",
 		"node",
 		"/code/main.js",
@@ -175,18 +179,20 @@ func ExecuteCpp(
 	)
 	defer cancel()
 
-	cmd:=exec.CommandContext(
-	ctx,
-	"docker",
-	"run",
-	"--rm",
-	"-v",
-	file.Name()+":/code/main.cpp",
-	"gcc:15-bookworm",
-	"sh",
-	"-c",
-	"g++ /code/main.cpp -o /code/main && /code/main",
-)
+	cmd := exec.CommandContext(
+		ctx,
+		"docker",
+		"run",
+		"--rm",
+		"--network", "none",
+		"--cpus", "1",
+		"--memory", "256m",
+		"-v", file.Name()+":/code/main.cpp:ro",
+		"gcc:15-bookworm",
+		"sh",
+		"-c",
+		"g++ /code/main.cpp -o /tmp/main && /tmp/main",
+	)
 
 	output, err := cmd.CombinedOutput()
 

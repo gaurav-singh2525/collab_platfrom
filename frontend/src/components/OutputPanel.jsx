@@ -1,9 +1,17 @@
 function OutputPanel({ output }) {
   return (
     <div>
-      <h3>Output</h3>
-
-      <pre>{output}</pre>
+      <pre
+        className="
+  h-56
+  overflow-y-auto
+  overflow-x-auto
+  whitespace-pre-wrap
+  break-words
+"
+      >
+        {output}
+      </pre>
     </div>
   );
 }
